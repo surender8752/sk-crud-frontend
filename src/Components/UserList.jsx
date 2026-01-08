@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import API from "../api";
 import EditUser from "./EditUser";
 
 const UserList = () => {
@@ -8,10 +8,15 @@ const UserList = () => {
   const [page, setPage] = useState(1);
 
   const load = async () => {
-    const res = await axios.get(
-      `http://localhost:5000/api/users?search=${search}&page=${page}`
-    );
-    setUsers(res.data.users);
+    try {
+      const res = await API.get(
+        `/api/users?search=${search}&page=${page}`
+      );
+      setUsers(res.data.users || []);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load users");
+    }
   };
 
   useEffect(() => {
@@ -19,15 +24,19 @@ const UserList = () => {
   }, [search, page]);
 
   const del = async (id) => {
-    await axios.delete(`http://localhost:5000/api/users/${id}`);
-    load();
+    try {
+      await API.delete(`/api/users/${id}`);
+      load();
+    } catch (err) {
+      alert("Delete failed");
+    }
   };
 
   return (
     <div className="card">
       <h2 className="text-xl mb-4">👥 Users</h2>
 
-      {/* SEARCH + PAGINATION */}
+      {/* 🔍 SEARCH + PAGINATION */}
       <div className="flex gap-3 mb-4">
         <input
           className="input"
@@ -54,6 +63,10 @@ const UserList = () => {
           Next
         </button>
       </div>
+
+      {users.length === 0 && (
+        <p className="text-gray-400">No users found</p>
+      )}
 
       {users.map((u) => (
         <div key={u._id} className="user-row">

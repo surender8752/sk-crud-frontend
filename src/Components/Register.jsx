@@ -1,14 +1,14 @@
-import axios from "axios";
 import { useState } from "react";
+import API from "../api";
 
-const Register = ({ onRegister, goToLogin }) => {
+const Register = ({ goToLogin }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const register = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/register", {
+      await API.post("/api/auth/register", {
         name,
         email,
         password,
@@ -28,12 +28,14 @@ const Register = ({ onRegister, goToLogin }) => {
       <input
         className="input mb-3"
         placeholder="Name"
+        value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
       <input
         className="input mb-3"
         placeholder="Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -41,6 +43,7 @@ const Register = ({ onRegister, goToLogin }) => {
         className="input mb-3"
         placeholder="Password"
         type="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 

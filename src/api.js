@@ -1,13 +1,17 @@
+// src/api.js
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://YOUR-BACKEND-URL.onrender.com", // baad me replace
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-API.interceptors.request.use((config) => {
+// 🔐 Token auto attach
+API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = token;
-  return config;
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+  return req;
 });
 
 export default API;

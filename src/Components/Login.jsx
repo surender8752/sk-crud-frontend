@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState } from "react";
+import API from "../api";
 
 const Login = ({ onLogin, goToRegister }) => {
   const [email, setEmail] = useState("");
@@ -7,10 +7,10 @@ const Login = ({ onLogin, goToRegister }) => {
 
   const login = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
-      );
+      const res = await API.post("/api/auth/login", {
+        email,
+        password,
+      });
 
       localStorage.setItem("token", res.data.token);
       onLogin();
@@ -26,6 +26,7 @@ const Login = ({ onLogin, goToRegister }) => {
       <input
         className="input mb-3"
         placeholder="Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -33,6 +34,7 @@ const Login = ({ onLogin, goToRegister }) => {
         className="input mb-3"
         placeholder="Password"
         type="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 

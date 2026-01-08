@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useState } from "react";
+import API from "../api";
 
 const AddUser = ({ refresh }) => {
   const [user, setUser] = useState({
@@ -9,9 +9,22 @@ const AddUser = ({ refresh }) => {
   });
 
   const submit = async () => {
-    await axios.post("http://localhost:5000/api/users", user);
-    setUser({ name: "", email: "", age: "" });
-    refresh();
+    if (!user.name || !user.email || !user.age) {
+      alert("All fields are required");
+      return;
+    }
+
+    try {
+      await API.post("/api/users", {
+        ...user,
+        age: Number(user.age),
+      });
+
+      setUser({ name: "", email: "", age: "" });
+      refresh();
+    } catch (err) {
+      alert(err.response?.data?.error || "Add user failed");
+    }
   };
 
   return (
@@ -27,6 +40,7 @@ const AddUser = ({ refresh }) => {
             setUser({ ...user, name: e.target.value })
           }
         />
+
         <input
           className="input"
           placeholder="Email"
@@ -35,9 +49,11 @@ const AddUser = ({ refresh }) => {
             setUser({ ...user, email: e.target.value })
           }
         />
+
         <input
           className="input"
           placeholder="Age"
+          type="number"
           value={user.age}
           onChange={(e) =>
             setUser({ ...user, age: e.target.value })

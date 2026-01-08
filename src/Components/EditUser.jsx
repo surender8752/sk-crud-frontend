@@ -1,17 +1,21 @@
-import axios from "axios";
 import { useState } from "react";
+import API from "../api";
 
 const EditUser = ({ user, refresh }) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(user.name);
 
   const update = async () => {
-    await axios.put(
-      `http://localhost:5000/api/users/${user._id}`,
-      { ...user, name }
-    );
-    setOpen(false);
-    refresh();
+    try {
+      await API.put(`/api/users/${user._id}`, {
+        ...user,
+        name,
+      });
+      setOpen(false);
+      refresh();
+    } catch (err) {
+      alert(err.response?.data?.error || "Update failed");
+    }
   };
 
   if (!open) {
@@ -39,4 +43,4 @@ const EditUser = ({ user, refresh }) => {
   );
 };
 
-export default EditUser; // ✅ VERY IMPORTANT
+export default EditUser;
